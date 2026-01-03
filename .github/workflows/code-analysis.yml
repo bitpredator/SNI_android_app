@@ -15,35 +15,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       # Setup Dart
-      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
 
       - name: Install dependencies
         run: dart pub get
+        working-directory: sni_app
 
       # - name: Verify formatting
       #   run: dart format --output=none --set-exit-if-changed .
+      #   working-directory: sni_app
 
       - name: Analyze project source
         run: dart analyze
+        working-directory: sni_app
 
       - name: Run tests
         run: dart test
+        working-directory: sni_app
 
   cpp:
     name: C/C++ CI
     runs-on: ubuntu-latest
-    needs: dart  # opzionale, se vuoi che C/C++ parta solo dopo Dart
+    needs: dart  # parte solo dopo che Dart ha completato
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Configure
         run: ./configure
+
       - name: Make
         run: make
+
       - name: Make Check
         run: make check
+
       - name: Make Distcheck
         run: make distcheck
