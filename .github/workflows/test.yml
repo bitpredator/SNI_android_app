@@ -18,26 +18,31 @@ jobs:
 
       # ---- C / C++ ----
       - name: Analyze C/C++
+        shell: pwsh
         run: |
-          if (Test-Path "*.c" -or Test-Path "*.cpp") {
-            clang-tidy *.c *.cpp --quiet
+          $files = Get-ChildItem -Recurse -Include *.c,*.cpp -ErrorAction SilentlyContinue
+          if ($files) {
+            clang-tidy $files.FullName --quiet
           } else {
             echo "No C/C++ files found"
           }
 
       # ---- CMake ----
       - name: Analyze CMake
+        shell: pwsh
         run: |
           if (Test-Path "CMakeLists.txt") {
-            cmake-lint CMakeLists.txt
+            cmakelint CMakeLists.txt
           } else {
             echo "No CMake files"
           }
 
       # ---- Dart ----
       - name: Analyze Dart
+        shell: pwsh
         run: |
-          if (Test-Path "*.dart") {
+          $files = Get-ChildItem -Recurse -Include *.dart -ErrorAction SilentlyContinue
+          if ($files) {
             dart analyze
           } else {
             echo "No Dart files"
@@ -45,8 +50,10 @@ jobs:
 
       # ---- HTML ----
       - name: Analyze HTML
+        shell: pwsh
         run: |
-          if (Test-Path "*.html") {
+          $files = Get-ChildItem -Recurse -Include *.html -ErrorAction SilentlyContinue
+          if ($files) {
             htmlhint "**/*.html"
           } else {
             echo "No HTML files"
@@ -54,10 +61,12 @@ jobs:
 
       # ---- Swift (best effort) ----
       - name: Analyze Swift
+        shell: pwsh
         continue-on-error: true
         run: |
-          if (Test-Path "*.swift") {
-            swiftlint
+          $files = Get-ChildItem -Recurse -Include *.swift -ErrorAction SilentlyContinue
+          if ($files) {
+            echo "Swift files detected (analysis limited on Windows)"
           } else {
             echo "No Swift files"
           }
